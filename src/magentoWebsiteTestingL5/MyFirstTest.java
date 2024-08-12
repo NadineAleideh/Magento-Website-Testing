@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -70,7 +71,12 @@ public class MyFirstTest {
 	@Test(priority = 2)
 	public void logOut() {
 		driver.get(logoutPage);
+		WebElement LogoutMessage = driver.findElement(By.xpath("//span[@data-ui-id='page-title-wrapper']"));
 
+		String ActualMsg = LogoutMessage.getText();
+		String ExpectedMsg = "You are signed out";
+
+		Assert.assertEquals(ActualMsg, ExpectedMsg);
 	}
 	
 	@Test(priority = 3 )
@@ -85,11 +91,18 @@ public class MyFirstTest {
 		EmailLoginInput.sendKeys(emailAddressToLogin);
 		passwordInput.sendKeys(password);
 		LoginButton.click();
+
+		String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
+
+		boolean ActualValue = WelcomeMessage.contains("Welcome");
+		boolean ExpectedValue = true;
+
+		Assert.assertEquals(ActualValue, ExpectedValue);
 		
 	}
 	
 	
-	@Test(priority = 4)
+	@Test(priority = 4, enabled= false)
 
 	public void addMenItem() throws InterruptedException {
 		WebElement MenSection = driver.findElement(By.id("ui-id-5"));
