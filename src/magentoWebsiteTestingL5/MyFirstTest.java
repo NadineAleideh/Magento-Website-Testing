@@ -1,0 +1,155 @@
+package magentoWebsiteTestingL5;
+
+import java.util.List;
+import java.util.Random;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class MyFirstTest {
+
+	WebDriver driver = new ChromeDriver();
+	String myWebsite = "https://magento.softwaretestingboard.com/";
+
+	Random rand = new Random();
+	
+	String password = "iLoveMyMom!234k";
+	String emailAddressToLogin = "";
+	
+	String logoutPage = "https://magento.softwaretestingboard.com/customer/account/logout/";
+
+	@BeforeTest
+	public void mySetup() {
+		driver.manage().window().maximize();
+		driver.get(myWebsite);
+	}
+
+	@Test(priority = 1, enabled = true)
+	public void myTest() {
+		
+		WebElement createAcountPage = driver.findElement(By.linkText("Create an Account"));
+		createAcountPage.click();
+		
+		String [] first_names = {"Alice", "Bob", "Charlie", "David", "Eve", "Fay", "Grace" };
+		String [] last_names = { "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"};
+		
+		int randomIndexForFirstNames = rand.nextInt(first_names.length);
+		int randomIndexForLastNames = rand.nextInt(last_names.length);
+		
+		
+		WebElement firstNameInput = driver.findElement(By.id("firstname"));
+		WebElement lastNameInput = driver.findElement(By.id("lastname"));
+		WebElement emailAddressInput = driver.findElement(By.id("email_address"));
+		WebElement passwordInput = driver.findElement(By.id("password"));
+		WebElement confirmPassword = driver.findElement(By.id("password-confirmation"));
+		WebElement createAccountButton = driver.findElement(By.xpath("//button[@title='Create an Account']"));
+		
+		String firstname = first_names[randomIndexForFirstNames];
+		String lastname = last_names[randomIndexForLastNames];
+		
+		
+		String domainName = "@gmail.com";
+		int randomnumforemail = rand.nextInt(9876);
+		
+		emailAddressToLogin = firstname + lastname + randomnumforemail + domainName;
+		
+		firstNameInput.sendKeys(firstname);
+		lastNameInput.sendKeys(lastname);
+		emailAddressInput.sendKeys(firstname + lastname+ randomnumforemail + domainName);
+		passwordInput.sendKeys(password);
+		confirmPassword.sendKeys(password);
+		createAccountButton.click();
+		
+	}
+	
+	
+	@Test(priority = 2)
+	public void logOut() {
+		driver.get(logoutPage);
+
+	}
+	
+	@Test(priority = 3 )
+	public void loginTest() {
+		WebElement LoginPage = driver.findElement(By.linkText("Sign In"));
+		LoginPage.click();
+
+		WebElement EmailLoginInput = driver.findElement(By.id("email"));
+		WebElement passwordInput = driver.findElement(By.id("pass"));
+		WebElement LoginButton = driver.findElement(By.cssSelector(".action.login.primary"));
+
+		EmailLoginInput.sendKeys(emailAddressToLogin);
+		passwordInput.sendKeys(password);
+		LoginButton.click();
+		
+	}
+	
+	
+	@Test(priority = 4)
+
+	public void addMenItem() throws InterruptedException {
+		WebElement MenSection = driver.findElement(By.id("ui-id-5"));
+		
+		MenSection.click();
+		
+		
+//		System.out.println(driver.findElements(By.className("product-item")).size());
+		
+		WebElement productITemsContainer = driver.findElement(By.className("product-items"));
+		
+//		System.out.println(productITemsContainer.findElements(By.className("product-item")).size());;
+//		
+//		; 
+		
+//		System.out.println(driver.findElements(By.tagName("li")).size());
+		
+		List<WebElement> AllItems = productITemsContainer.findElements(By.tagName("li"));
+		
+int totalNumberOfItems = AllItems.size(); 
+int randomItem = rand.nextInt(totalNumberOfItems); 
+
+AllItems.get(randomItem).click();;
+
+WebElement theContainerOfSizes = driver.findElement(By.cssSelector(".swatch-attribute-options.clearfix"));
+
+;
+
+String [] sizes = {"33","34","36","37"};
+// select any one for me i will select the first one 
+//System.out.println(theContainerOfSizes.findElements(By.className("swatch-option")).size());
+//System.out.println(theContainerOfSizes.findElements(By.tagName("div")).size());
+List<WebElement> ListOfSizes =theContainerOfSizes.findElements(By.className("swatch-option"));
+int numberofSizes = ListOfSizes.size();
+
+int randomSize = rand.nextInt(numberofSizes);
+ListOfSizes.get(randomSize).click();;
+
+
+WebElement ColorsContainer = driver.findElement(By.cssSelector("div[class='swatch-attribute color'] div[role='listbox']"));
+List<WebElement> ListOfClors = ColorsContainer.findElements(By.tagName("div")); 
+int numberOfColors = ListOfClors.size(); 
+
+int randomColor = rand.nextInt(numberOfColors);
+ListOfClors.get(randomColor).click();
+
+WebElement AddToCartButton = driver.findElement(By.id("product-addtocart-button"));
+
+AddToCartButton.click();
+
+
+WebElement MessageAdded = driver.findElement(By.className("message-success"));
+
+
+System.out.println(MessageAdded.getText().contains("You added"));
+
+
+Assert.assertEquals(MessageAdded.getText().contains("You added"), true);
+
+	}
+
+
+}
